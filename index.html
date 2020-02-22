@@ -1,0 +1,360 @@
+<!doctype html>
+<!-- vim:ts=2:sw=2:set noet: -->
+<html lang="en">
+	<head>
+		<title>dice7</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="Roll your dice for your roleplaying session.">
+		<meta name="keywords" content="dice,roleplay,dungeons,dragons">
+		<meta name="theme-color" content="#1d1d1b">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="apple-mobile-web-app-title" content="dice7">
+		<meta name="msapplication-TileImage" content="dice7-144.png">
+		<meta name="msapplication-TileColor" content="white">
+		<link rel="apple-touch-icon" href="dice7-512.png">
+		<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+		<link rel="manifest" href="/dice7/manifest.json">
+		<style>
+body {
+	font-family: sans-serif;
+	color: white;
+	text-align: center;
+	height: calc(100vh - 16px);
+	width: calc(100vw - 16px);
+	padding: 8px;
+	margin: 0;
+	background: url("dice7-backdrop.png"), #1d1d1b;
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-blend-mode: difference;
+	background-attachment: fixed;
+}
+
+a,
+input {
+	background-color: inherit;
+	color: inherit;
+	text-align: center;
+}
+
+header {
+	margin-top: 35px;
+}
+
+main div {
+	display: flex;
+	flex-direction: column;
+}
+
+input,
+#result,
+#result span {
+	margin: 20px 0px;
+	font-size: 15pt;
+}
+
+#input {
+	border: solid;
+	border-width: 0px 0px 2px 0px;
+}
+
+#btn {
+	border: solid 2px;
+	flex-grow: 0;
+}
+
+#result div {
+	display: inline-block;
+}
+
+#result .result {
+	font-weight: bold;
+	font-size: 20pt;
+}
+
+.mod {
+	font-style: oblique;
+}
+
+#notice {
+	position: absolute;
+	left: 0;
+	top: 5px;
+	width: 100%;
+	opacity: 0.5;
+}
+
+.help {
+	text-align: left;
+	opacity: 0.5;
+}
+
+code {
+	font-size: 14pt;
+}
+
+label {
+	width: 0px;
+	height: 0px;
+	margin: 0px;
+	padding: 0px;
+	overflow: hidden;
+}
+
+#keybox {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	background-color: inherit;
+	width: 100%;
+	margin: 0;
+}
+
+#keybox #toggle {
+	display: block;
+	width: 100%;
+	height: 30px;
+	padding-top: 10px;
+	background-color: #fff2;
+	border: solid;
+	border-width: 2px 0px 1px 0px;
+}
+
+#keyboard table {
+	float: right;
+}
+
+#keyboard table td {
+	border: solid 1px;
+	padding: 0;
+}
+
+#keyboard table td a {
+	display: block;
+	margin: 10px 20px;
+	text-decoration: none;
+}
+		</style>
+	</head>
+	<body>
+		<span id="notice">Your Browser saves your Theme.</span>
+		<header>
+			<h1>dice7</h1>
+		</header>
+		<main>
+			<div>
+				<input type="text" id="input"><label for="input">Command</label>
+				<input type="submit" value="Roll" id="btn">
+				<div id="result"></div>
+				<div class="help">
+					<p>2 ways to cont-roll:</p>
+					<ul>
+						<li>Use the input field above (type <code>commands</code>).</li>
+						<li>Use the address bar hash: (<code>#commands</code>).
+					</ul>
+					<p>Commands are concatenated with commas (<code>,</code>). There are two types of commands:</p>
+					<ul>
+						<li>Theme commands: One character selects the theme. Currently available themes are: <a href="#b"><code>b</code></a>right, <a href="#d"><code>d</code></a>ark.</li>
+						<li>Roll commands: Use the following notation to roll the dice: &lt;number&gt;<code>d</code>&lt;dice&gt;&lt;modifier&gt;. Valid modifiers start with <code>-</code> or <code>+</code> and may only contain numbers. Working examples are: <a href="#1d4+3"><code>1d4+3</code></a>, <a href="#2d6-2"><code>2d6-2</code></a>, <a href="#2d8"><code>2d8</code></a>. It's also possible to roll impossible dice (like: <a href="#2d3421+3"><code>2d3421+3</code></a>).</li>
+						<li>Multi-command examples: <a href="#b,2d4+1,2d4+2"><code>b,2d4+1,2d4+2</code></a>, <a href="#d,5d8+2,3d4-2"><code>d,5d8+2,3d4-2</code></a>.</li>
+					</ul>
+					<p><small>© Copyright 2018 sirjofri. Logo by Tristis. All rights reserved.</small></p>
+				</div>
+			</div>
+		</main>
+		<div id="keybox">
+			<a id="toggle" href="javascript:keyboard.toggle();">Keyboard</a>
+			<div id="keyboard" style="display:none;">
+				<table>
+					<tr>
+						<td><a href="javascript:keyboard.tap('dark');">d</a></td>
+						<td><a href="javascript:keyboard.tap('bright');">b</a></td>
+						<td colspan="2"><a href="javascript:keyboard.tap('r');">←</a></td>
+					</tr>
+					<tr>
+						<td><a href="javascript:keyboard.tap('7');">7</a></td>
+						<td><a href="javascript:keyboard.tap('8');">8</a></td>
+						<td><a href="javascript:keyboard.tap('9');">9</a></td>
+						<td><a href="javascript:keyboard.tap('-');">-</a></td>
+					</tr>
+					<tr>
+						<td><a href="javascript:keyboard.tap('4');">4</a></td>
+						<td><a href="javascript:keyboard.tap('5');">5</a></td>
+						<td><a href="javascript:keyboard.tap('6');">6</a></td>
+						<td><a href="javascript:keyboard.tap('+');">+</a></td>
+					</tr>
+					<tr>
+						<td><a href="javascript:keyboard.tap('1');">1</a></td>
+						<td><a href="javascript:keyboard.tap('2');">2</a></td>
+						<td><a href="javascript:keyboard.tap('3');">3</a></td>
+						<td><a href="javascript:keyboard.tap('d');">d</a></td>
+					</tr>
+					<tr>
+						<td colspan="2"><a href="javascript:keyboard.tap('0');">0</a></td>
+						<td><a href="javascript:keyboard.tap(',');">,</a></td>
+						<td><a href="javascript:keyboard.tap(' ');">Roll</a></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<script><!--
+HTMLCollection.prototype.foreach = function(func) {
+	for (var i = 0; i < this.length; i++) {
+		func(this[i], i, this);
+	}
+};
+var finput = document.getElementById("input");
+var fresult = document.getElementById("result");
+var fbutton = document.getElementById("btn");
+
+var parseCmd = function(cmd) {
+	var regex = /([0-9]+)d([0-9]+)([-+0-9]+)?/g;
+	var match = regex.exec(cmd);
+	var mod = match[3] ? parseInt(match[3]) : 0;
+	return { num: parseInt(match[1]), type: parseInt(match[2]), mod: mod };
+};
+
+var parseInput = function(input) {
+	if (input == "")
+		return [];
+	return input.split(",");
+};
+
+var roll = function(cmd) {
+	var c = parseCmd(cmd);
+	var result = 0;
+	var singles = "";
+	for (i=0; i<5; i++)
+		Math.random();
+	for (i=c.num; i>0; i--) {
+		if (i != c.num)
+			singles += " + ";
+		var rolled = Math.round((Math.random()*(c.type-1))+1);
+		result += rolled;
+		singles += rolled;
+	}
+	fresult.innerHTML += stringify(result, c.mod, singles);
+};
+
+var stringify = function(result, mod, sequence) {
+	return ("<div><span class=\"result\">" + (result+mod) + "</span> = " + sequence + " <span class=\"mod\">" + (mod >= 0 ? "+" : "" ) + mod + "</span></div>");
+};
+
+var setTheme = function(theme) {
+	switch (theme) {
+	case "b":
+		document.body.style.backgroundColor = "white";
+		document.body.style.color = "black";
+		break;
+	case "d":
+		document.body.style.backgroundColor = "#1d1d1b";
+		document.body.style.color = "white";
+	}
+	if (!window.localStorage)
+		return;
+	localStorage.setItem("theme", theme);
+};
+
+var loadTheme = function() {
+	if (!window.localStorage)
+		return;
+	var theme = localStorage.getItem("theme");
+	return ( theme == null ? "d" : theme );
+};
+
+var exec = function(cmdchain) {
+	if (!window.localStorage)
+		document.getElementById("notice").style.display = "none";
+	var cmds = parseInput(cmdchain);
+	setTheme(loadTheme());
+	fresult.innerHTML = "";
+	var cmdbuf = [];
+
+	for (var i=0; i<cmds.length; i++) {
+		if (cmds[i].length == 1) {
+			setTheme(cmds[i]);
+		} else if (cmds[i].length > 1) {
+			cmdbuf.push(cmds[i]);
+			roll(cmds[i]);
+		}
+	}
+	finput.value = cmdbuf.join(",");
+};
+
+window.onload =
+window.onhashchange = function() {
+	exec(location.hash.substring(1));
+};
+
+finput.onkeyup = function(ev) {
+	if (ev.keyCode == 13) {
+		fbutton.click();
+	}
+};
+
+fbutton.onclick = function() {
+	location.hash = finput.value;
+	exec(finput.value);
+};
+console.log("© Copyright 2018 sirjofri. Logo by Tristis. All rights reserved.");
+
+if ("serviceWorker" in navigator) {
+	navigator.serviceWorker
+		.register("/dice7/worker.js")
+		.then(function() { console.log("Service Worker Registered"); });
+}
+
+var keyboard = {};
+keyboard.kbox = document.getElementById("keybox");
+keyboard.kb = document.getElementById("keyboard");
+keyboard.tg = document.getElementById("toggle");
+keyboard.main = document.getElementsByTagName("main")[0];
+
+keyboard.main.style.marginBottom = "43px";
+
+keyboard.toggle = function() {
+	keyboard.kb.style.display = ( keyboard.kb.style.display == "none" ? "block" : "none" );
+	keyboard.main.style.marginBottom = ( keyboard.kb.style.display == "none" ? keyboard.tg.offsetHeight+"px" : keyboard.kbox.offsetHeight+"px" );
+}
+
+keyboard.tap = function(key) {
+	switch (key) {
+	case "dark":
+		setTheme('d');
+		break;
+	case "bright":
+		setTheme('b');
+		break;
+	case "r":
+		finput.value = finput.value.slice(0, -1);
+		break;
+	case "0":
+	case "1":
+	case "2":
+	case "3":
+	case "4":
+	case "5":
+	case "6":
+	case "7":
+	case "8":
+	case "9":
+	case "-":
+	case "+":
+	case "d":
+	case ",":
+		finput.value += key;
+		break;
+	case " ":
+		fbutton.click();
+		keyboard.toggle();
+		break;
+	default:
+		console.log("keyboard: You found a bug!");
+	}
+}
+		//--></script>
+	</body>
+</html>
